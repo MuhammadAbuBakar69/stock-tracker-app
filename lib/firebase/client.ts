@@ -18,9 +18,12 @@ function ensureInitialized() {
     // Basic runtime validation to help surface misconfigured env vars quickly.
     const missing = Object.entries(firebaseConfig).filter(([, v]) => !v).map(([k]) => k);
     if (missing.length) {
-      console.warn('Firebase initialization: missing NEXT_PUBLIC_FIREBASE_* env vars:', missing);
+      const msg = 'Missing NEXT_PUBLIC_FIREBASE_* env vars: ' + missing.join(', ') + '. Please copy .env.local.example to .env.local and fill these values.';
+      console.error(msg);
+      throw new Error(msg);
     }
 
+    // All required config present — initialize the client app.
     try {
       initializeApp(firebaseConfig);
       console.info('Firebase initialized (client)');
